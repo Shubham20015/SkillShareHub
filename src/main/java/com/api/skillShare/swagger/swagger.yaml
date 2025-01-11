@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: SkillShareHub API
   description: A REST API to manage skill sharing between users.
-  version: v1.0
+  version: v1.1
 servers:
   - url: 'http://localhost:8080'
     description: Local server
@@ -453,8 +453,8 @@ components:
           type: integer
           format: int64
         name:
-          maxLength: 40
-          minLength: 3
+          maxLength: 30
+          minLength: 2
           type: string
         description:
           maxLength: 100
@@ -468,6 +468,10 @@ components:
             - EXPERT
         user:
           $ref: '#/components/schemas/User'
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
         createdAt:
           type: string
           format: date-time
@@ -536,12 +540,16 @@ components:
           format: date-time
     SkillRequestDto:
       required:
+        - userId
         - name
       type: object
       properties:
+        userId:
+          type: string
+          format: uuid
         name:
-          maxLength: 40
-          minLength: 3
+          maxLength: 30
+          minLength: 2
           type: string
         description:
           maxLength: 100
@@ -569,27 +577,32 @@ components:
           format: int64
     ReviewRequestDto:
       required:
-        - rating
+        - reviewerId
+        - skillId
       type: object
       properties:
+        reviewerId:
+          type: string
+          format: uuid
+        skillId:
+          type: number
         rating:
           maximum: 5
           minimum: 1
           type: integer
-          format: int32
         feedback:
           maxLength: 500
           type: string
     Review:
-      required:
-        - rating
       type: object
       properties:
         id:
           type: string
           format: uuid
-        skillRequest:
-          $ref: '#/components/schemas/SkillRequest'
+        reviewer:
+          $ref: '#/components/schemas/User'
+        skill:
+          $ref: '#/components/schemas/Skill'
         rating:
           maximum: 5
           minimum: 1
