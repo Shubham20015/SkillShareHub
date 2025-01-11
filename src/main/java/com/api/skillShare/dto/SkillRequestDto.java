@@ -1,10 +1,11 @@
 package com.api.skillShare.dto;
 
 import com.api.skillShare.constraint.ValidEnum;
+import com.api.skillShare.constraint.ValidUUID;
 import com.api.skillShare.enums.Expertise;
+import com.api.skillShare.service.marker.PostValidationGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,14 +16,18 @@ import java.util.Optional;
 @NoArgsConstructor
 public class SkillRequestDto {
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 3, max = 40, message = "Name must be between 2 and 32 characters long")
+    @ValidUUID(groups = PostValidationGroup.class, message = "Correct user id is required")
+    @Setter
+    private String userId;
+
+    @NotBlank(groups = PostValidationGroup.class, message = "Name is required")
+    @Size(min = 2, max = 30, message = "Name must be between 2 and 30 characters long")
     @Setter
     private String name;
 
-    private Optional<@Size(max = 100, message = "Name should be more than 100 characters long") String> description;
+    private Optional<@Size(max = 100, message = "Name should be more than 100 characters long") String> description = Optional.empty();
 
-    @ValidEnum(message = "Invalid expertise level. Must be one of: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT")
+    @ValidEnum(groups = PostValidationGroup.class, message = "Invalid expertise level. Must be one of: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT")
     @Setter
     private Expertise expertiseLevel;
 

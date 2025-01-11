@@ -1,6 +1,7 @@
 package com.api.skillShare.model;
 
 import com.api.skillShare.enums.RequestStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,12 @@ public class SkillRequest {
 
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
+    @JsonIgnoreProperties({"skills", "requestedSkillRequests", "providedSkillRequests"})
     private User requester;
 
     @ManyToOne
     @JoinColumn(name = "provider_id", nullable = false)
+    @JsonIgnoreProperties({"skills", "requestedSkillRequests", "providedSkillRequests"})
     private User provider;
 
     @ManyToOne
