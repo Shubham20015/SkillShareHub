@@ -4,7 +4,7 @@ import com.api.skillShare.constraint.ValidUUID;
 import com.api.skillShare.dto.UserRequestDto;
 import com.api.skillShare.model.User;
 import com.api.skillShare.service.UserService;
-import jakarta.validation.Valid;
+import com.api.skillShare.service.marker.PostValidationGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid @NotNull UserRequestDto userRequestDto) {
+    public ResponseEntity<User> createUser(@RequestBody @Validated(PostValidationGroup.class) @NotNull UserRequestDto userRequestDto) {
         User user = userService.createUser(userRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
@@ -40,20 +40,20 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable @NotBlank @ValidUUID final String userId) {
+    public ResponseEntity<User> getUserById(@PathVariable @ValidUUID final String userId) {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable @NotBlank final String userId,
-                                           @RequestBody @Valid @NotNull UserRequestDto userRequestDto) {
+    public ResponseEntity<User> updateUser(@PathVariable @ValidUUID final String userId,
+                                           @RequestBody @Validated @NotNull UserRequestDto userRequestDto) {
         User user = userService.updateUser(userId, userRequestDto);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable @NotBlank @ValidUUID final String userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable @ValidUUID final String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok("User: " + userId + " deleted successfully");
     }

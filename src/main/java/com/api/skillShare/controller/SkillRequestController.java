@@ -1,12 +1,10 @@
 package com.api.skillShare.controller;
 
-import com.api.skillShare.dto.SkillRequestDto;
 import com.api.skillShare.dto.SkillShareCreateRequestDto;
 import com.api.skillShare.dto.SkillShareUpdateRequestDto;
 import com.api.skillShare.model.SkillRequest;
 import com.api.skillShare.service.SkillRequestService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +31,14 @@ public class SkillRequestController {
     }
 
     @PatchMapping("/{skillRequestId}")
-    public ResponseEntity<SkillRequest> updateSkillRequestStatus(@PathVariable @NotBlank final Long skillRequestId,
+    public ResponseEntity<SkillRequest> updateSkillRequestStatus(@PathVariable @NotNull final Long skillRequestId,
                                                                  @RequestBody @Valid @NotNull SkillShareUpdateRequestDto skillShareUpdateRequestDto) {
         SkillRequest skillRequest = skillRequestService.updateSkillRequestStatus(skillRequestId, skillShareUpdateRequestDto);
         return ResponseEntity.ok(skillRequest);
     }
 
     @DeleteMapping("/{skillRequestId}")
-    public ResponseEntity<String> deleteSkillRequest(@PathVariable @NotBlank final Long skillRequestId) {
+    public ResponseEntity<String> deleteSkillRequest(@PathVariable @NotNull final Long skillRequestId) {
         skillRequestService.deleteSkillRequest(skillRequestId);
         return ResponseEntity.ok("Request: " + skillRequestId + " deleted successfully");
     }

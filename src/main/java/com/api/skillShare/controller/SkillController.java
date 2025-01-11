@@ -3,8 +3,7 @@ package com.api.skillShare.controller;
 import com.api.skillShare.dto.SkillRequestDto;
 import com.api.skillShare.model.Skill;
 import com.api.skillShare.service.SkillService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import com.api.skillShare.service.marker.PostValidationGroup;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class SkillController {
     private SkillService skillService;
 
     @PostMapping
-    public ResponseEntity<Skill> createSkill(@RequestBody @Valid @NotNull SkillRequestDto skillRequestDto) {
+    public ResponseEntity<Skill> createSkill(@RequestBody @Validated(PostValidationGroup.class) @NotNull SkillRequestDto skillRequestDto) {
         Skill skill = skillService.createSkill(skillRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(skill);
     }
@@ -39,20 +38,20 @@ public class SkillController {
     }
 
     @GetMapping("/{skillId}")
-    public ResponseEntity<Skill> getSkillById(@PathVariable @NotBlank final Long skillId) {
+    public ResponseEntity<Skill> getSkillById(@PathVariable @NotNull final Long skillId) {
         Skill skill = skillService.getSkillById(skillId);
         return ResponseEntity.ok(skill);
     }
 
     @PatchMapping("/{skillId}")
-    public ResponseEntity<Skill> updateSkill(@PathVariable @NotBlank final Long skillId,
-                                           @RequestBody @Valid @NotNull SkillRequestDto skillRequestDto) {
+    public ResponseEntity<Skill> updateSkill(@PathVariable @NotNull final Long skillId,
+                                           @RequestBody @Validated @NotNull SkillRequestDto skillRequestDto) {
         Skill skill = skillService.updateSkill(skillId, skillRequestDto);
         return ResponseEntity.ok(skill);
     }
 
     @DeleteMapping("/{skillId}")
-    public ResponseEntity<String> deleteSkill(@PathVariable @NotBlank final Long skillId) {
+    public ResponseEntity<String> deleteSkill(@PathVariable @NotNull final Long skillId) {
         skillService.deleteSkill(skillId);
         return ResponseEntity.ok("Skill: " + skillId + " deleted successfully");
     }

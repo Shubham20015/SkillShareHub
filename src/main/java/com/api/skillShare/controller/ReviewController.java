@@ -2,12 +2,9 @@ package com.api.skillShare.controller;
 
 import com.api.skillShare.constraint.ValidUUID;
 import com.api.skillShare.dto.ReviewRequestDto;
-import com.api.skillShare.dto.SkillRequestDto;
 import com.api.skillShare.model.Review;
-import com.api.skillShare.model.Skill;
 import com.api.skillShare.service.ReviewService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import com.api.skillShare.service.marker.PostValidationGroup;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +27,26 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Review> addReview(@RequestBody @Valid @NotNull ReviewRequestDto reviewRequestDto) {
+    public ResponseEntity<Review> addReview(@RequestBody @Validated(PostValidationGroup.class) @NotNull ReviewRequestDto reviewRequestDto) {
         Review review = reviewService.addReview(reviewRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(review);
     }
 
     @GetMapping("/skill/{skillId}")
-    public ResponseEntity<List<Review>> getReviewsBySkillId(@PathVariable @NotBlank final Long skillId) {
+    public ResponseEntity<List<Review>> getReviewsBySkillId(@PathVariable @NotNull final Long skillId) {
         List<Review> reviews = reviewService.getReviewsBySkillId(skillId);
         return ResponseEntity.ok(reviews);
     }
 
     @PatchMapping("/{reviewId}")
-    public ResponseEntity<Review> updateReview(@PathVariable @NotBlank @ValidUUID final String reviewId,
-                                             @RequestBody @Valid @NotNull ReviewRequestDto reviewRequestDto) {
+    public ResponseEntity<Review> updateReview(@PathVariable @ValidUUID final String reviewId,
+                                             @RequestBody @Validated @NotNull ReviewRequestDto reviewRequestDto) {
         Review review = reviewService.updateReview(reviewId, reviewRequestDto);
         return ResponseEntity.ok(review);
     }
 
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable @NotBlank @ValidUUID final String reviewId) {
+    public ResponseEntity<String> deleteReview(@PathVariable @ValidUUID final String reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok("Review: " + reviewId + " deleted successfully");
     }
