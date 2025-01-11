@@ -4,20 +4,19 @@ import com.api.skillShare.enums.Expertise;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
+public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
 
     @Override
-    public void initialize(ValidEnum constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
+    public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
+        if (value == null) {
+            return false;
+        }
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         try {
-            Expertise expertise = Expertise.valueOf(value); // Try to parse the string to an enum
+            Enum.valueOf(value.getDeclaringClass(), value.name());
             return true;
         } catch (IllegalArgumentException e) {
-            return false;
+            return false; // Invalid enum value
         }
     }
 }

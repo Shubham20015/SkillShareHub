@@ -10,5 +10,4 @@ import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
-    Optional<List<Review>> findBySkillRequest_Skill_Id(Long skillId);
 }
