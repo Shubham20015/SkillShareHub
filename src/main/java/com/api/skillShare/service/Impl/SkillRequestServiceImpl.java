@@ -49,7 +49,7 @@ public class SkillRequestServiceImpl implements SkillRequestService {
             throw new ResourceNotFoundException("Provider user: " + skillShareCreateRequestDto.getProviderId() + " doesn't exist");
         }
         else if (skill.isEmpty()) {
-            throw new ResourceNotFoundException("Mentioned skill" + skillShareCreateRequestDto.getSkillId() + " doesn't exist");
+            throw new ResourceNotFoundException("Mentioned skill id: " + skillShareCreateRequestDto.getSkillId() + " doesn't exist");
         }
 
         SkillRequest skillRequest = SkillRequest.builder()
@@ -68,7 +68,7 @@ public class SkillRequestServiceImpl implements SkillRequestService {
 
         if (skillRequest.isPresent()) {
             SkillRequest updatedSkillRequest = skillRequest.get();
-            updatedSkillRequest.setStatus(updatedSkillRequest.getStatus());
+            updatedSkillRequest.setStatus(skillShareUpdateRequestDto.getStatus());
 
             return skillRequestRepository.save(updatedSkillRequest);
         } else {

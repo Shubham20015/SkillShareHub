@@ -3,7 +3,11 @@ package com.api.skillShare.service.Impl;
 import com.api.skillShare.dto.ReviewRequestDto;
 import com.api.skillShare.exception.ResourceNotFoundException;
 import com.api.skillShare.model.Review;
+import com.api.skillShare.model.Skill;
+import com.api.skillShare.model.User;
 import com.api.skillShare.repository.ReviewRepository;
+import com.api.skillShare.repository.SkillRepository;
+import com.api.skillShare.repository.UserRepository;
 import com.api.skillShare.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +28,25 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SkillRepository skillRepository;
+
     @Override
     public Review addReview(ReviewRequestDto reviewRequestDto) {
+        User reviewer = userRepository
+                .findById(UUID.fromString(reviewRequestDto.getReviewerId()))
+                .orElseThrow(() -> new ResourceNotFoundException("User: " + reviewRequestDto.getReviewerId() + " not found"));
+
+        Skill skill = skillRepository
+                .findById(reviewRequestDto.getSkillId())
+                .orElseThrow(() -> new ResourceNotFoundException("Skill id: " + reviewRequestDto.getSkillId() + " not found"));
+
         Review review = Review.builder()
+                .reviewer(reviewer)
+                .skill(skill)
                 .rating(reviewRequestDto.getRating())
                 .feedback(reviewRequestDto.getFeedback().orElse(null))
                 .build();
@@ -35,11 +55,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> getReviewsBySkillId(Long skillId) {
-        Optional<List<Review>> listOfReviews = reviewRepository.findBySkillRequest_Skill_Id(skillId);
-        if (listOfReviews.isPresent()) {
-            return listOfReviews.get();
+        Optional<Skill> skill = skillRepository.findById(skillId);
+        if (skill.isPresent() && !skill.get().getReviews().isEmpty()) {
+            return skill.get().getReviews();
         } else {
-            throw new ResourceNotFoundException("Request: " + skillId + " still doesn't exist");
+            throw new ResourceNotFoundException("Requested skill id: " + skillId + " still doesn't exist");
         }
     }
 
@@ -50,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (review.isPresent()) {
             Review updatedReview = review.get();
-            updatedReview.setRating(reviewRequestDto.getRating());
+            if(reviewRequestDto.getRating() != null) updatedReview.setRating(reviewRequestDto.getRating());
             updatedReview.setFeedback(reviewRequestDto.getFeedback().orElse(null));
 
             return reviewRepository.save(updatedReview);

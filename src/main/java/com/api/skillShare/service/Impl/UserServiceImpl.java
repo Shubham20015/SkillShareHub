@@ -41,9 +41,9 @@ public class UserServiceImpl implements UserService {
 
         if (user.isPresent()) {
             User updatedUser = user.get();
-            updatedUser.setName(userRequestDto.getName());
-            updatedUser.setEmail(userRequestDto.getEmail());
-            updatedUser.setBio(userRequestDto.getBio().orElse(null));
+            if(userRequestDto.getName() != null) updatedUser.setName(userRequestDto.getName());
+            if(userRequestDto.getEmail() != null) updatedUser.setEmail(userRequestDto.getEmail());
+            if(userRequestDto.getBio().isPresent()) updatedUser.setBio(userRequestDto.getBio().get());
 
             return userRepository.save(updatedUser);
         } else {
