@@ -15,21 +15,9 @@ import java.util.Optional;
 @NoArgsConstructor
 public class UserRequestDto {
 
-    @NotBlank(groups = PostValidationGroup.class, message = "Name is required")
-    @Size(min = 3, max = 40, message = "Name must be between 3 and 40 characters long")
-    @Setter
-    private String name;
-
-    @NotBlank(groups = PostValidationGroup.class, message = "Email is required")
-    @Email(message = "Email should be valid")
-    @Setter
-    private String email;
-
     private Optional<@Size(max = 300, message = "Bio must be lesser than 300 characters long") String> bio = Optional.empty();
 
-    public UserRequestDto(String name, String email, String bio) {
-        this.name = name;
-        this.email = email;
+    public UserRequestDto(String bio) {
         this.bio = Optional.ofNullable(bio);
     }
 
