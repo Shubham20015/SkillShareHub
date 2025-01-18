@@ -6,7 +6,6 @@ import com.api.skillShare.model.User;
 import java.util.List;
 
 public interface UserService {
-    User createUser(UserRequestDto userRequestDto);
     User updateUser(String userId, UserRequestDto userRequestDto);
     List<User> getUsers();
     User getUserById(String userId);

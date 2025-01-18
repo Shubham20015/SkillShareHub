@@ -4,12 +4,10 @@ import com.api.skillShare.constraint.ValidUUID;
 import com.api.skillShare.dto.UserRequestDto;
 import com.api.skillShare.model.User;
 import com.api.skillShare.service.UserService;
-import com.api.skillShare.service.marker.PostValidationGroup;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +25,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Validated(PostValidationGroup.class) @NotNull UserRequestDto userRequestDto) {
-        User user = userService.createUser(userRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
-
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getUsers();
@@ -47,7 +39,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable @ValidUUID final String userId,
-                                           @RequestBody @Validated @NotNull UserRequestDto userRequestDto) {
+                                           @RequestBody @Valid @NotNull UserRequestDto userRequestDto) {
         User user = userService.updateUser(userId, userRequestDto);
         return ResponseEntity.ok(user);
     }
